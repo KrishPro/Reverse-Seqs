@@ -40,13 +40,13 @@ def train_step(transformer: Transformer, optimizer: optim.Adam, criterion: nn.Cr
     src, tar = create_batch(BATCH_SIZE, SEQ_LEN, device)
     T, N = tar.shape
 
-    tar_input = tar[1:]
+    tar_input = tar[:-1]
     assert tar_input.shape == (T-1, N)
     model_output: torch.Tensor = transformer(src, tar_input)
     assert model_output.shape == (T-1, N, VOCAB_SIZE)
 
     model_output = model_output.view((T-1)*N, VOCAB_SIZE)
-    tar_output = tar[:-1].reshape((T-1)*N)
+    tar_output = tar[1:].reshape((T-1)*N)
 
     loss: torch.Tensor = criterion(model_output, tar_output)
 
