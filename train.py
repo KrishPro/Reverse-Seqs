@@ -19,13 +19,13 @@ training_steps = 5_000
 VOCAB_SIZE = 13
 SEQ_LEN = 10
 D_MODEL = 512
-NHEAD = 4
+NHEAD = 8
 LEARNING_RATE = 1e-4
-DROPOUT = 0.4
+DROPOUT = 0.2
 FFN_HID_DIM = 512 * 4
-BATCH_SIZE = 128
-NUM_ENCODER_LAYERS = 5
-NUM_DECODER_LAYERS = 5
+BATCH_SIZE = 32
+NUM_ENCODER_LAYERS = 6
+NUM_DECODER_LAYERS = 6
 
 def create_optimizer(params: Generator, learning_rate: float) -> tuple[optim.Adam, nn.CrossEntropyLoss]:
     optimizer = optim.Adam(params, lr=learning_rate, betas=(0.9, 0.98), eps=1e-9)
