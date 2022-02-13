@@ -56,7 +56,7 @@ class Transformer(nn.Module):
     def forward(self, src: torch.Tensor, tar: torch.Tensor):
         T, _ = tar.shape
 
-        tar_mask: torch.Tensor = self.generate_square_subsequent_mask(T)
+        tar_mask: torch.Tensor = self.generate_square_subsequent_mask(T).to(tar.device)
 
         src = self.embedding_layer(src)
         tar = self.embedding_layer(tar)
