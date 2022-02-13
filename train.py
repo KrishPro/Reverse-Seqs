@@ -15,7 +15,6 @@ from data import create_batch
 
 from model import Transformer
 
-training_steps = 5_000
 VOCAB_SIZE = 13
 SEQ_LEN = 10
 D_MODEL = 512
@@ -67,10 +66,13 @@ writer, global_step = setup_tensorboard()
 def save_checkpoint(transformer: Transformer):
     torch.save(transformer.state_dict(), "checkpoints/latest.pth")
 
-for i in tqdm(range(training_steps)):
-    loss = train_step(transformer, optimizer, criterion, device=device)
-    writer.add_scalar("loss", loss, global_step=global_step)
-    global_step += 1
+    i = 0
+    while True:
+        loss = train_step(transformer, optimizer, criterion, device=device)
+        writer.add_scalar("loss", loss, global_step=global_step)
+        global_step += 1
     if i % 500 == 0:
         save_checkpoint(transformer)
-save_checkpoint(transformer)
+
+        i += 1
+ 
