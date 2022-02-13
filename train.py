@@ -55,24 +55,29 @@ def train_step(transformer: Transformer, optimizer: optim.Adam, criterion: nn.Cr
 
     return loss.item()
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# device = torch.device("cpu")
+def main():
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # device = torch.device("cpu")
 
-transformer = Transformer(D_MODEL, VOCAB_SIZE, NHEAD, NUM_ENCODER_LAYERS, NUM_DECODER_LAYERS, FFN_HID_DIM, DROPOUT).to(device)
-optimizer, criterion = create_optimizer(transformer.parameters(), LEARNING_RATE)
+    transformer = Transformer(D_MODEL, VOCAB_SIZE, NHEAD, NUM_ENCODER_LAYERS, NUM_DECODER_LAYERS, FFN_HID_DIM, DROPOUT).to(device)
+    optimizer, criterion = create_optimizer(transformer.parameters(), LEARNING_RATE)
 
-writer, global_step = setup_tensorboard()
+    writer, global_step = setup_tensorboard()
 
-def save_checkpoint(transformer: Transformer):
-    torch.save(transformer.state_dict(), "checkpoints/latest.pth")
+    def save_checkpoint(transformer: Transformer):
+        torch.save(transformer.state_dict(), "checkpoints/latest.pth")
 
     i = 0
     while True:
         loss = train_step(transformer, optimizer, criterion, device=device)
         writer.add_scalar("loss", loss, global_step=global_step)
         global_step += 1
-    if i % 500 == 0:
-        save_checkpoint(transformer)
+        if i % 5 == 0:
+            print(f"Trainning...{i:05d}", end="\r")
+        if i % 100 == 0:
+            save_checkpoint(transformer)
 
         i += 1
  
+if __name__ == '__main__':
+    main()
